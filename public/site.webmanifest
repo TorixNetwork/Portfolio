@@ -1,0 +1,16 @@
+{
+  "name": "Torix Network",
+  "short_name": "Torix",
+  "description": "Digital infrastructure studio for automation, web apps, cloud systems, and launch support.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#03050b",
+  "theme_color": "#03050b",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

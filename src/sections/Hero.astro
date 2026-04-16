@@ -1,0 +1,31 @@
+---
+import CtaLink from "@components/CtaLink.astro";
+import { siteConfig } from "@config/site";
+---
+
+<section class="hero section-band" id="hero" aria-labelledby="hero-title">
+  <canvas class="hero-canvas" data-hero-canvas aria-hidden="true"></canvas>
+  <div class="hero-fallback" aria-hidden="true"></div>
+  <div class="hero-grid" aria-hidden="true"></div>
+
+  <div class="container hero-content">
+    <p class="hero-kicker reveal">Torix Network / Digital Infrastructure Studio</p>
+    <h1 class="hero-title reveal" id="hero-title">
+      <span class="gradient-text">Build faster.</span>
+      Automate smarter.
+      <span class="gradient-text">Launch stronger.</span>
+    </h1>
+    <p class="hero-copy reveal">
+      Premium Telegram bots, websites, web apps, cloud systems, automation, and launch support for teams that need practical digital infrastructure.
+    </p>
+    <div class="hero-actions reveal">
+      <CtaLink href="#contact" label="Start a Project" />
+      <CtaLink href={siteConfig.telegramUrl} label="Open Telegram" variant="secondary" external />
+    </div>
+  </div>
+
+  <a class="scroll-cue" href="#about" aria-label="Scroll to About">
+    <span>Scroll</span>
+    <i aria-hidden="true"></i>
+  </a>
+</section>

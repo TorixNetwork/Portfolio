@@ -1,0 +1,27 @@
+---
+import SectionHeader from "@components/SectionHeader.astro";
+import { advantages } from "@data/content";
+---
+
+<section class="section-band why" id="why" aria-labelledby="why-title">
+  <div class="section-grid-bg" aria-hidden="true"></div>
+  <div class="container">
+    <SectionHeader
+      id="why-title"
+      eyebrow="Our Advantage"
+      title="Why"
+      highlight="Torix Network?"
+      description="The operating style is startup-first: direct, technical, reliable, and focused on digital systems that can survive real-world use."
+    />
+
+    <div class="advantage-grid">
+      {advantages.map((item, index) => (
+        <article class="advantage-card reveal" data-tilt-card>
+          <span class="advantage-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+          <h3>{item.title}</h3>
+          <p>{item.description}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

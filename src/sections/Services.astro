@@ -1,0 +1,28 @@
+---
+import SectionHeader from "@components/SectionHeader.astro";
+import { services } from "@data/content";
+---
+
+<section class="section-band services" id="services" aria-labelledby="services-title">
+  <div class="section-grid-bg" aria-hidden="true"></div>
+  <div class="container">
+    <SectionHeader
+      id="services-title"
+      eyebrow="What We Build"
+      title="Services and"
+      highlight="capabilities."
+      description="From automation systems to full-stack platforms, Torix Network engineers digital infrastructure that moves quickly and can keep scaling after launch."
+    />
+
+    <div class="service-grid">
+      {services.map((service) => (
+        <article class="service-card reveal" data-tilt-card>
+          <div class="card-code" aria-hidden="true">{service.code}</div>
+          <h3>{service.title}</h3>
+          <p>{service.description}</p>
+          <span>{service.tag}</span>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

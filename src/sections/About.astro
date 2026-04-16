@@ -1,0 +1,45 @@
+---
+import SectionHeader from "@components/SectionHeader.astro";
+import { stats } from "@data/content";
+---
+
+<section class="section-band about" id="about" aria-labelledby="about-title">
+  <div class="section-grid-bg" aria-hidden="true"></div>
+  <div class="container about-layout">
+    <div class="about-copy">
+      <SectionHeader
+        id="about-title"
+        eyebrow="About Torix Network"
+        title="A flexible tech studio built for the"
+        highlight="digital age."
+        description="Torix Network operates at the intersection of automation, digital infrastructure, and product engineering. We build systems that help creators, brands, communities, and founders move from idea to launch with more confidence."
+      />
+      <p class="body-copy reveal">
+        The work spans sophisticated Telegram bots, high-performance websites, web applications, API integrations, VPS operations, and growth infrastructure. Each project is shaped around a real business outcome and built to be understandable after handoff.
+      </p>
+      <div class="stats-grid" aria-label="Torix Network capability highlights">
+        {stats.map((stat) => (
+          <div class="stat-card reveal">
+            <strong>{stat.value}</strong>
+            <span>{stat.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <figure class="about-visual reveal">
+      <img
+        src="/images/server-room-kewl-1280.jpg"
+        alt="Server racks with network lights inside a dark data center."
+        width="1280"
+        height="854"
+        loading="lazy"
+        decoding="async"
+      />
+      <figcaption>
+        <span>Infrastructure mindset</span>
+        <strong>Automation, cloud, and launch systems designed as one operating layer.</strong>
+      </figcaption>
+    </figure>
+  </div>
+</section>

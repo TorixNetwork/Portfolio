@@ -1,0 +1,54 @@
+---
+import BrandLogo from "@components/BrandLogo.astro";
+import { navItems, siteConfig } from "@config/site";
+---
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <BrandLogo />
+      <p>
+        A premium digital infrastructure studio building automation, web products, cloud operations, and growth systems for modern digital teams.
+      </p>
+      <div class="footer-socials">
+        <a href={siteConfig.telegramUrl} target="_blank" rel="noopener noreferrer">Telegram</a>
+        <a href={`mailto:${siteConfig.email}`}>Email</a>
+      </div>
+    </div>
+
+    <nav class="footer-column" aria-label="Footer services">
+      <h2>Services</h2>
+      <ul>
+        <li><a href="#services">Telegram Bots</a></li>
+        <li><a href="#services">Web Development</a></li>
+        <li><a href="#services">Web Apps</a></li>
+        <li><a href="#services">API and Automation</a></li>
+        <li><a href="#services">Cloud Management</a></li>
+        <li><a href="#services">Custom Solutions</a></li>
+      </ul>
+    </nav>
+
+    <nav class="footer-column" aria-label="Footer company">
+      <h2>Company</h2>
+      <ul>
+        {navItems.map((item) => (
+          <li><a href={item.href}>{item.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="footer-column">
+      <h2>Connect</h2>
+      <ul>
+        <li><a href={siteConfig.telegramUrl} target="_blank" rel="noopener noreferrer">Telegram Community</a></li>
+        <li><a href={`mailto:${siteConfig.email}`}>Email Torix</a></li>
+        <li><a href="#ecosystem">Collaborations</a></li>
+        <li><a href="#contact">Start a Project</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <p>Copyright 2026 Torix Network. All rights reserved.</p>
+    <p>Build. Automate. Launch.</p>
+  </div>
+</footer>

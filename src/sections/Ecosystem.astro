@@ -1,0 +1,38 @@
+---
+import SectionHeader from "@components/SectionHeader.astro";
+import { ecosystemNodes } from "@data/content";
+---
+
+<section class="section-band ecosystem" id="ecosystem" aria-labelledby="ecosystem-title">
+  <div class="section-grid-bg" aria-hidden="true"></div>
+  <div class="container ecosystem-layout">
+    <SectionHeader
+      id="ecosystem-title"
+      eyebrow="The Ecosystem"
+      title="The Torix"
+      highlight="collaboration layer."
+      description="Torix Network is built around useful connections: builders, creators, startups, operators, and communities working together to launch stronger digital projects."
+    />
+
+    <div class="ecosystem-map reveal" aria-hidden="true">
+      <div class="map-line map-line--one"></div>
+      <div class="map-line map-line--two"></div>
+      <div class="map-core">
+        <span>TN</span>
+      </div>
+      <div class="map-node map-node--a"></div>
+      <div class="map-node map-node--b"></div>
+      <div class="map-node map-node--c"></div>
+      <div class="map-node map-node--d"></div>
+    </div>
+
+    <div class="ecosystem-grid">
+      {ecosystemNodes.map((node) => (
+        <article class="ecosystem-card reveal">
+          <h3>{node.title}</h3>
+          <p>{node.description}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

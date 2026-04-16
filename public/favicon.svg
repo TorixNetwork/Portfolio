@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Torix Network">
+  <rect width="64" height="64" rx="12" fill="#03050b"/>
+  <path d="M14 18h36v8H36v24h-8V26H14z" fill="#05d9e8"/>
+  <path d="M18 46h28v6H18z" fill="#89ffdd"/>
+  <path d="M44 18h6v28h-6z" fill="#9b5cff" opacity=".78"/>
+</svg>

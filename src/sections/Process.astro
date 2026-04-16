@@ -1,0 +1,27 @@
+---
+import SectionHeader from "@components/SectionHeader.astro";
+import { processSteps } from "@data/content";
+---
+
+<section class="section-band process" id="process" aria-labelledby="process-title">
+  <div class="section-grid-bg" aria-hidden="true"></div>
+  <div class="container">
+    <SectionHeader
+      id="process-title"
+      eyebrow="How It Works"
+      title="A clear path from"
+      highlight="idea to launch."
+      description="The process is intentionally straightforward, with enough structure to protect quality and enough flexibility to keep momentum."
+    />
+
+    <ol class="process-list">
+      {processSteps.map((step, index) => (
+        <li class="process-step reveal">
+          <span>{String(index + 1).padStart(2, "0")}</span>
+          <h3>{step.title}</h3>
+          <p>{step.description}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>

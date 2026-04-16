@@ -1,0 +1,92 @@
+---
+import SectionHeader from "@components/SectionHeader.astro";
+import CtaLink from "@components/CtaLink.astro";
+import { siteConfig } from "@config/site";
+import { serviceOptions } from "@data/content";
+
+const hasEndpoint = Boolean(siteConfig.formEndpoint);
+const formAction = hasEndpoint ? siteConfig.formEndpoint : `mailto:${siteConfig.email}`;
+const formMethod = hasEndpoint ? "post" : "post";
+---
+
+<section class="section-band contact" id="contact" aria-labelledby="contact-title">
+  <div class="section-grid-bg" aria-hidden="true"></div>
+  <div class="container">
+    <SectionHeader
+      id="contact-title"
+      eyebrow="Get in Touch"
+      title="Start a"
+      highlight="conversation."
+      description="Bring a defined brief, an early idea, or a launch problem that needs a practical technical partner."
+    />
+
+    <div class="contact-layout">
+      <div class="contact-copy reveal">
+        <p>
+          Telegram is the fastest way to reach Torix Network. Email works well for detailed project context, technical notes, and formal collaboration requests.
+        </p>
+        <div class="contact-links" aria-label="Contact options">
+          <a href={`mailto:${siteConfig.email}`}>
+            <span>Email</span>
+            <strong>{siteConfig.email}</strong>
+          </a>
+          <a href={siteConfig.telegramUrl} target="_blank" rel="noopener noreferrer">
+            <span>Telegram</span>
+            <strong>{siteConfig.telegramHandle}</strong>
+          </a>
+        </div>
+        <div class="contact-note">
+          <span>Form behavior</span>
+          <p>
+            This static site uses a mailto fallback by default. Add a form endpoint in configuration when you connect a hosted form backend.
+          </p>
+        </div>
+        <CtaLink href={siteConfig.telegramUrl} label="Message on Telegram" variant="secondary" external />
+      </div>
+
+      <form
+        class="contact-form reveal"
+        action={formAction}
+        method={formMethod}
+        enctype={hasEndpoint ? undefined : "text/plain"}
+        data-contact-form
+        data-form-endpoint={siteConfig.formEndpoint}
+        data-contact-email={siteConfig.email}
+      >
+        <div class="form-heading">
+          <h3>Project details</h3>
+          <p>Share enough context for a useful first reply.</p>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="name">Your name</label>
+            <input id="name" name="name" type="text" autocomplete="name" required placeholder="Your name" />
+          </div>
+          <div class="field">
+            <label for="email">Email address</label>
+            <input id="email" name="email" type="email" autocomplete="email" required placeholder="you@example.com" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="service">Project type</label>
+          <select id="service" name="service" required>
+            <option value="">Select a service</option>
+            {serviceOptions.map((option) => <option value={option}>{option}</option>)}
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="message">Project message</label>
+          <textarea id="message" name="message" required minlength="20" placeholder="Describe the project, timeline, goals, and any links worth reviewing."></textarea>
+        </div>
+
+        <button class="button button--primary form-submit" type="submit">
+          <span>Prepare Message</span>
+        </button>
+        <p class="form-status" data-form-status role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+</section>

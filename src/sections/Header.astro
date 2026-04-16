@@ -1,0 +1,61 @@
+---
+import BrandLogo from "@components/BrandLogo.astro";
+import CtaLink from "@components/CtaLink.astro";
+import { navItems, siteConfig } from "@config/site";
+---
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header" data-site-header>
+  <div class="container header-inner">
+    <BrandLogo />
+
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      <ul>
+        {navItems.map((item) => (
+          <li><a href={item.href}>{item.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      <CtaLink href="#contact" label="Start Project" variant="ghost" className="header-cta" />
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-menu-toggle
+      >
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-menu" id="mobile-menu" data-menu-panel hidden>
+    <div class="mobile-menu__inner">
+      <div class="mobile-menu__top">
+        <BrandLogo />
+        <button class="menu-close" type="button" aria-label="Close navigation menu" data-menu-close>
+          Close
+        </button>
+      </div>
+      <nav aria-label="Mobile navigation">
+        <ul>
+          {navItems.map((item) => (
+            <li><a href={item.href} data-menu-link>{item.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+      <div class="mobile-menu__contact">
+        <a href={siteConfig.telegramUrl} target="_blank" rel="noopener noreferrer">
+          {siteConfig.telegramHandle}
+        </a>
+        <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
+      </div>
+    </div>
+  </div>
+</header>

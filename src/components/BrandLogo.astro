@@ -1,0 +1,13 @@
+---
+interface Props {
+  href?: string;
+  className?: string;
+}
+
+const { href = "/", className = "" } = Astro.props;
+---
+
+<a class:list={["brand-logo", className]} href={href} aria-label="Torix Network home">
+  <span class="brand-mark" aria-hidden="true">T</span>
+  <span>Torix Network</span>
+</a>

@@ -1,0 +1,34 @@
+{
+  "name": "torix-network-portfolio",
+  "version": "1.0.0",
+  "description": "Production-ready portfolio and business website for Torix Network.",
+  "type": "module",
+  "private": false,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "og:capture": "node scripts/capture-og.mjs",
+    "qa:responsive": "node scripts/qa-responsive.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.3.1",
+    "astro": "^5.7.5",
+    "three": "^0.176.0",
+    "typescript": "^5.8.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.52.0"
+  },
+  "engines": {
+    "node": ">=20.10.0"
+  },
+  "keywords": [
+    "astro",
+    "portfolio",
+    "business-website",
+    "static-site",
+    "torix-network"
+  ],
+  "license": "MIT"
+}
