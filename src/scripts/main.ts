@@ -1,5 +1,3 @@
-import { initHeroScene } from "./hero-scene";
-
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
 
@@ -10,6 +8,10 @@ initCursor();
 initTiltCards();
 initContactForm();
 initHeroScene();
+
+function initHeroScene() {
+  void import("./hero-scene").then(({ initHeroScene }) => initHeroScene());
+}
 
 function initHeader() {
   const header = document.querySelector<HTMLElement>("[data-site-header]");

@@ -469,6 +469,7 @@ strong {
 .hero::after {
   position: absolute;
   inset: auto 0 0;
+  z-index: 3;
   height: 42%;
   pointer-events: none;
   content: "";
@@ -485,7 +486,10 @@ strong {
 }
 
 .hero-canvas {
-  z-index: 0;
+  z-index: 1;
+  opacity: 0;
+  mix-blend-mode: screen;
+  transition: opacity 700ms ease;
 }
 
 .hero-fallback {
@@ -497,10 +501,21 @@ strong {
     #03050b;
 }
 
+.hero.is-webgl-active .hero-canvas {
+  opacity: 1;
+}
+
+.hero.is-webgl-active .hero-fallback {
+  opacity: 0.9;
+}
+
 .hero-grid {
-  z-index: 1;
+  z-index: 2;
   pointer-events: none;
-  background-image:
+  background:
+    radial-gradient(ellipse 60% 60% at 50% 50%, rgba(5, 217, 232, 0.08), transparent 70%),
+    radial-gradient(ellipse 50% 50% at 80% 20%, rgba(155, 92, 255, 0.11), transparent 52%),
+    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(134, 255, 215, 0.07), transparent 62%),
     linear-gradient(rgba(132, 244, 255, 0.06) 1px, transparent 1px),
     linear-gradient(90deg, rgba(132, 244, 255, 0.06) 1px, transparent 1px);
   background-size: 84px 84px;
@@ -509,7 +524,7 @@ strong {
 
 .hero-content {
   position: relative;
-  z-index: 2;
+  z-index: 4;
   max-width: 950px;
   text-align: center;
 }
@@ -553,7 +568,7 @@ strong {
   position: absolute;
   right: max(1rem, calc((100% - var(--container)) / 2));
   bottom: 1.15rem;
-  z-index: 3;
+  z-index: 4;
   display: flex;
   align-items: center;
   gap: 0.7rem;

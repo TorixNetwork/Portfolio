@@ -45,16 +45,25 @@ for (const viewport of viewports) {
     const body = document.body;
     const overflowX = Math.max(body.scrollWidth, doc.scrollWidth) - doc.clientWidth;
     const hero = document.querySelector(".hero");
+    const canvas = document.querySelector(".hero-canvas");
     const next = document.querySelector("#about");
     const heroBottom = hero?.getBoundingClientRect().bottom ?? 0;
     const nextTop = next?.getBoundingClientRect().top ?? 0;
     const links = Array.from(document.querySelectorAll("a")).filter((link) => !link.getAttribute("href"));
+    const canvasRect = canvas?.getBoundingClientRect();
 
     return {
       overflowX,
       hasHeroHint: nextTop <= window.innerHeight || heroBottom < window.innerHeight,
       emptyLinks: links.length,
-      title: document.title
+      title: document.title,
+      heroIsWebglActive: hero?.classList.contains("is-webgl-active") ?? false,
+      heroIsFallback: hero?.classList.contains("is-webgl-fallback") ?? false,
+      canvasWidth: canvas instanceof HTMLCanvasElement ? canvas.width : 0,
+      canvasHeight: canvas instanceof HTMLCanvasElement ? canvas.height : 0,
+      canvasCssWidth: canvasRect?.width ?? 0,
+      canvasCssHeight: canvasRect?.height ?? 0,
+      canvasOpacity: canvas ? getComputedStyle(canvas).opacity : "0"
     };
   });
 
@@ -62,6 +71,11 @@ for (const viewport of viewports) {
   if (!audit.hasHeroHint) failures.push(`${viewport.name}: next section hint is not visible under the hero`);
   if (audit.emptyLinks > 0) failures.push(`${viewport.name}: found empty anchor hrefs`);
   if (!audit.title.includes("Torix Network")) failures.push(`${viewport.name}: document title missing brand`);
+  if (!audit.heroIsWebglActive) failures.push(`${viewport.name}: hero WebGL scene did not activate`);
+  if (audit.heroIsFallback) failures.push(`${viewport.name}: hero unexpectedly used fallback on normal viewport`);
+  if (audit.canvasOpacity !== "1") failures.push(`${viewport.name}: hero canvas is not visible`);
+  if (audit.canvasWidth <= 300 || audit.canvasHeight <= 150) failures.push(`${viewport.name}: hero canvas retained default bitmap size`);
+  if (audit.canvasCssWidth < viewport.width - 4 || audit.canvasCssHeight < viewport.height * 0.7) failures.push(`${viewport.name}: hero canvas is not sized to the hero`);
   if (consoleErrors.length) failures.push(`${viewport.name}: console errors: ${consoleErrors.join(" | ")}`);
 
   if (viewport.name === "390") {
@@ -99,8 +113,11 @@ const reducedPage = await reducedContext.newPage();
 await reducedPage.goto(baseUrl, { waitUntil: "networkidle" });
 const reducedAudit = await reducedPage.evaluate(() => {
   const canvas = document.querySelector(".hero-canvas");
+  const hero = document.querySelector(".hero");
   return {
     canvasDisplay: canvas ? getComputedStyle(canvas).display : "missing",
+    heroIsWebglActive: hero?.classList.contains("is-webgl-active") ?? false,
+    heroIsFallback: hero?.classList.contains("is-webgl-fallback") ?? false,
     hiddenRevealCount: Array.from(document.querySelectorAll(".reveal")).filter((element) => {
       const style = getComputedStyle(element);
       return Number(style.opacity) < 1;
@@ -108,8 +125,40 @@ const reducedAudit = await reducedPage.evaluate(() => {
   };
 });
 if (reducedAudit.canvasDisplay !== "none") failures.push("reduced-motion: hero canvas should be disabled");
+if (reducedAudit.heroIsWebglActive) failures.push("reduced-motion: hero WebGL scene should not activate");
+if (!reducedAudit.heroIsFallback) failures.push("reduced-motion: hero should mark fallback mode");
 if (reducedAudit.hiddenRevealCount > 0) failures.push("reduced-motion: reveal content should be visible");
 await reducedContext.close();
+
+const noWebglContext = await browser.newContext({
+  viewport: { width: 390, height: 844 },
+  isMobile: true,
+  hasTouch: true,
+  colorScheme: "dark"
+});
+await noWebglContext.addInitScript(() => {
+  const originalGetContext = HTMLCanvasElement.prototype.getContext;
+  HTMLCanvasElement.prototype.getContext = function patchedGetContext(type, ...args) {
+    if (type === "webgl" || type === "experimental-webgl" || type === "webgl2") return null;
+    return originalGetContext.call(this, type, ...args);
+  };
+});
+const noWebglPage = await noWebglContext.newPage();
+await noWebglPage.goto(baseUrl, { waitUntil: "networkidle" });
+await noWebglPage.waitForTimeout(600);
+const noWebglAudit = await noWebglPage.evaluate(() => {
+  const hero = document.querySelector(".hero");
+  const canvas = document.querySelector(".hero-canvas");
+  return {
+    heroIsWebglActive: hero?.classList.contains("is-webgl-active") ?? false,
+    heroIsFallback: hero?.classList.contains("is-webgl-fallback") ?? false,
+    canvasOpacity: canvas ? getComputedStyle(canvas).opacity : "missing"
+  };
+});
+if (noWebglAudit.heroIsWebglActive) failures.push("no-webgl: hero WebGL scene should not activate");
+if (!noWebglAudit.heroIsFallback) failures.push("no-webgl: hero should use fallback");
+if (noWebglAudit.canvasOpacity !== "0") failures.push("no-webgl: inactive canvas should stay hidden");
+await noWebglContext.close();
 
 await browser.close();
 
