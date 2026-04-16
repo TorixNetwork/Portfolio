@@ -1,4 +1,5 @@
 import {
+  AdditiveBlending,
   BufferAttribute,
   BufferGeometry,
   IcosahedronGeometry,
@@ -37,26 +38,32 @@ export async function initHeroScene() {
       powerPreference: "high-performance"
     });
     const scene = new Scene();
-    const camera = new PerspectiveCamera(60, 1, 0.1, 1000);
+    const camera = new PerspectiveCamera(isCompact ? 64 : 68, 1, 0.1, 1000);
     const bounds = {
-      x: isCompact ? 44 : 45,
-      y: isCompact ? 34 : 35,
-      z: isCompact ? 30 : 40
+      x: isCompact ? 48 : 58,
+      y: isCompact ? 36 : 42,
+      z: isCompact ? 38 : 58
     };
-    const primaryCount = isCompact ? 120 : 200;
-    const secondaryCount = isCompact ? 48 : 80;
-    const primary = createParticleLayer(primaryCount, bounds, isCompact ? 0.16 : 0.18, 0x00c8ff, 0.78);
-    const secondary = createParticleLayer(secondaryCount, { x: isCompact ? 39 : 40, y: isCompact ? 29 : 30, z: 30 }, isCompact ? 0.13 : 0.14, 0xa855f7, 0.56);
-    const primaryLineMaterial = new LineBasicMaterial({ color: 0x00c8ff, transparent: true, opacity: isCompact ? 0.1 : 0.12 });
-    const secondaryLineMaterial = new LineBasicMaterial({ color: 0x7c3aed, transparent: true, opacity: isCompact ? 0.07 : 0.08 });
+    const primaryCount = isCompact ? 158 : 260;
+    const secondaryCount = isCompact ? 68 : 112;
+    const deepCount = isCompact ? 42 : 88;
+    const primary = createParticleLayer(primaryCount, bounds, isCompact ? 0.2 : 0.23, 0x00d8ff, 0.9, 1);
+    const secondary = createParticleLayer(secondaryCount, { x: isCompact ? 42 : 50, y: isCompact ? 32 : 38, z: isCompact ? 34 : 48 }, isCompact ? 0.16 : 0.18, 0xa855f7, 0.7, 0.82);
+    const deep = createParticleLayer(deepCount, { x: isCompact ? 56 : 72, y: isCompact ? 42 : 48, z: isCompact ? 50 : 72 }, isCompact ? 0.12 : 0.14, 0x86ffd7, 0.46, 0.54);
+    const primaryLineMaterial = new LineBasicMaterial({ color: 0x00d8ff, transparent: true, opacity: isCompact ? 0.16 : 0.2, blending: AdditiveBlending, depthWrite: false });
+    const secondaryLineMaterial = new LineBasicMaterial({ color: 0x7c3aed, transparent: true, opacity: isCompact ? 0.11 : 0.14, blending: AdditiveBlending, depthWrite: false });
+    const railMaterial = new LineBasicMaterial({ color: 0x86ffd7, transparent: true, opacity: isCompact ? 0.09 : 0.13, blending: AdditiveBlending, depthWrite: false });
+    const depthRails = createDepthRails(railMaterial);
     const shapes = [
-      { mesh: addShape(new IcosahedronGeometry(isCompact ? 3.7 : 4.5, 0), 0x00c8ff, isCompact ? -18 : -26, isCompact ? 11 : 10, -12, 0.23), rx: 0.004, ry: 0.007 },
-      { mesh: addShape(new OctahedronGeometry(isCompact ? 3 : 3.5, 0), 0x7c3aed, isCompact ? 18 : 24, isCompact ? -10 : -9, -6, 0.22), rx: 0.006, ry: 0.005 },
-      { mesh: addShape(new TorusGeometry(isCompact ? 2.9 : 3.5, 0.75, 6, 16), 0x06ffd4, isCompact ? 14 : 18, isCompact ? 14 : 14, -18, 0.22), rx: 0.005, ry: 0.009 },
-      { mesh: addShape(new TetrahedronGeometry(isCompact ? 2.6 : 3.2, 0), 0xa855f7, isCompact ? -16 : -20, isCompact ? -13 : -12, -8, 0.21), rx: 0.007, ry: 0.004 }
+      { mesh: addShape(new IcosahedronGeometry(isCompact ? 4.2 : 5.2, 0), 0x00c8ff, isCompact ? -19 : -29, isCompact ? 12 : 12, -14, 0.32), rx: 0.004, ry: 0.007 },
+      { mesh: addShape(new OctahedronGeometry(isCompact ? 3.3 : 4.1, 0), 0x7c3aed, isCompact ? 19 : 28, isCompact ? -11 : -10, -4, 0.3), rx: 0.006, ry: 0.005 },
+      { mesh: addShape(new TorusGeometry(isCompact ? 3.3 : 4.2, 0.82, 8, 18), 0x06ffd4, isCompact ? 14 : 21, isCompact ? 14 : 15, -22, 0.3), rx: 0.005, ry: 0.009 },
+      { mesh: addShape(new TetrahedronGeometry(isCompact ? 2.9 : 3.7, 0), 0xa855f7, isCompact ? -17 : -23, isCompact ? -14 : -13, -6, 0.28), rx: 0.007, ry: 0.004 },
+      { mesh: addShape(new TorusGeometry(isCompact ? 9.2 : 12.5, 0.18, 8, 64), 0x00c8ff, 0, 0, -38, isCompact ? 0.11 : 0.14), rx: 0.0015, ry: 0.0022 },
+      { mesh: addShape(new TorusGeometry(isCompact ? 12.5 : 17, 0.16, 8, 72), 0x7c3aed, 0, 0, -54, isCompact ? 0.08 : 0.11), rx: -0.001, ry: 0.0018 }
     ];
-    let primaryLines = buildLines(primary.positions, primaryCount, primaryLineMaterial, isCompact ? 12 : 14, null, isCompact ? 190 : 520);
-    let secondaryLines = buildLines(secondary.positions, secondaryCount, secondaryLineMaterial, isCompact ? 16 : 18, null, isCompact ? 90 : 220);
+    let primaryLines = buildLines(primary.positions, primaryCount, primaryLineMaterial, isCompact ? 14 : 16, null, isCompact ? 260 : 760);
+    let secondaryLines = buildLines(secondary.positions, secondaryCount, secondaryLineMaterial, isCompact ? 18 : 21, null, isCompact ? 130 : 340);
     const pointer = { x: 0, y: 0 };
     let visible = true;
     let running = false;
@@ -64,10 +71,10 @@ export async function initHeroScene() {
     let lastTime = performance.now();
     let frame = 0;
 
-    camera.position.z = isCompact ? 34 : 30;
+    camera.position.z = isCompact ? 37 : 34;
     renderer.setClearColor(0x000000, 0);
 
-    scene.add(primary.points, secondary.points, primaryLines, secondaryLines);
+    scene.add(primary.points, secondary.points, deep.points, primaryLines, secondaryLines, depthRails);
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
@@ -115,10 +122,14 @@ export async function initHeroScene() {
       primary.material.dispose();
       secondary.geometry.dispose();
       secondary.material.dispose();
+      deep.geometry.dispose();
+      deep.material.dispose();
       primaryLines.geometry.dispose();
       secondaryLines.geometry.dispose();
+      depthRails.geometry.dispose();
       primaryLineMaterial.dispose();
       secondaryLineMaterial.dispose();
+      railMaterial.dispose();
       shapes.forEach(({ mesh }) => {
         mesh.geometry.dispose();
         Array.isArray(mesh.material) ? mesh.material.forEach((material) => material.dispose()) : mesh.material.dispose();
@@ -130,7 +141,7 @@ export async function initHeroScene() {
     document.addEventListener("visibilitychange", onVisibilityChange);
     window.addEventListener("pagehide", cleanup, { once: true });
 
-    function createParticleLayer(count: number, layerBounds: { x: number; y: number; z: number }, size: number, color: number, opacity: number) {
+    function createParticleLayer(count: number, layerBounds: { x: number; y: number; z: number }, size: number, color: number, opacity: number, speedScale: number) {
       const positions = new Float32Array(count * 3);
       const velocities = new Float32Array(count * 3);
 
@@ -139,14 +150,22 @@ export async function initHeroScene() {
         positions[index] = randomRange(-layerBounds.x, layerBounds.x);
         positions[index + 1] = randomRange(-layerBounds.y, layerBounds.y);
         positions[index + 2] = randomRange(-layerBounds.z, layerBounds.z);
-        velocities[index] = randomRange(-0.014, 0.014);
-        velocities[index + 1] = randomRange(-0.012, 0.012);
-        velocities[index + 2] = randomRange(-0.005, 0.005);
+        velocities[index] = randomRange(-0.014, 0.014) * speedScale;
+        velocities[index + 1] = randomRange(-0.012, 0.012) * speedScale;
+        velocities[index + 2] = randomRange(-0.008, 0.008) * speedScale;
       }
 
       const geometry = new BufferGeometry();
       geometry.setAttribute("position", new BufferAttribute(positions, 3));
-      const material = new PointsMaterial({ color, size, transparent: true, opacity, sizeAttenuation: true });
+      const material = new PointsMaterial({
+        color,
+        size,
+        transparent: true,
+        opacity,
+        sizeAttenuation: true,
+        blending: AdditiveBlending,
+        depthWrite: false
+      });
       const points = new Points(geometry, material);
 
       return { positions, velocities, geometry, material, points, bounds: layerBounds };
@@ -159,12 +178,66 @@ export async function initHeroScene() {
           color,
           wireframe: true,
           transparent: true,
-          opacity
+          opacity,
+          blending: AdditiveBlending,
+          depthWrite: false
         })
       );
       mesh.position.set(x, y, z);
       scene.add(mesh);
       return mesh;
+    }
+
+    function createDepthRails(material: InstanceType<typeof LineBasicMaterial>) {
+      const points: number[] = [];
+      const nearZ = isCompact ? 18 : 22;
+      const farZ = isCompact ? -58 : -74;
+      const lanes = isCompact
+        ? [
+            [-0.9, -0.72],
+            [-0.45, -0.78],
+            [0.45, -0.78],
+            [0.9, -0.72],
+            [-0.96, 0.72],
+            [-0.44, 0.8],
+            [0.44, 0.8],
+            [0.96, 0.72]
+          ]
+        : [
+            [-1.02, -0.74],
+            [-0.68, -0.83],
+            [-0.34, -0.88],
+            [0.34, -0.88],
+            [0.68, -0.83],
+            [1.02, -0.74],
+            [-1.06, 0.74],
+            [-0.68, 0.84],
+            [-0.34, 0.9],
+            [0.34, 0.9],
+            [0.68, 0.84],
+            [1.06, 0.74]
+          ];
+
+      lanes.forEach(([x, y]) => {
+        points.push(x * 16, y * 11, farZ, x * (isCompact ? 38 : 52), y * (isCompact ? 27 : 34), nearZ);
+      });
+
+      const planes = isCompact ? 4 : 5;
+
+      for (let index = 0; index < planes; index += 1) {
+        const progress = index / Math.max(1, planes - 1);
+        const z = farZ + (nearZ - farZ) * progress;
+        const width = (isCompact ? 15 : 20) + progress * (isCompact ? 25 : 36);
+        const height = (isCompact ? 10 : 13) + progress * (isCompact ? 18 : 25);
+        points.push(-width, -height, z, width, -height, z);
+        points.push(width, -height, z, width, height, z);
+        points.push(width, height, z, -width, height, z);
+        points.push(-width, height, z, -width, -height, z);
+      }
+
+      const geometry = new BufferGeometry();
+      geometry.setAttribute("position", new BufferAttribute(new Float32Array(points), 3));
+      return new LineSegments(geometry, material);
     }
 
     function buildLines(
@@ -252,10 +325,11 @@ export async function initHeroScene() {
 
       updateLayer(primary, primaryCount, delta);
       updateLayer(secondary, secondaryCount, delta);
+      updateLayer(deep, deepCount, delta);
 
-      if (frame % (isCompact ? 8 : 4) === 0) {
-        primaryLines = buildLines(primary.positions, primaryCount, primaryLineMaterial, isCompact ? 12 : 14, primaryLines, isCompact ? 190 : 520);
-        secondaryLines = buildLines(secondary.positions, secondaryCount, secondaryLineMaterial, isCompact ? 16 : 18, secondaryLines, isCompact ? 90 : 220);
+      if (frame % (isCompact ? 7 : 5) === 0) {
+        primaryLines = buildLines(primary.positions, primaryCount, primaryLineMaterial, isCompact ? 14 : 16, primaryLines, isCompact ? 260 : 760);
+        secondaryLines = buildLines(secondary.positions, secondaryCount, secondaryLineMaterial, isCompact ? 18 : 21, secondaryLines, isCompact ? 130 : 340);
       }
 
       shapes.forEach((shape) => {
@@ -265,11 +339,15 @@ export async function initHeroScene() {
 
       primary.points.rotation.y += 0.0008 * delta;
       secondary.points.rotation.y -= 0.0005 * delta;
+      deep.points.rotation.y += 0.00035 * delta;
+      deep.points.rotation.x -= 0.0002 * delta;
       primaryLines.rotation.y = primary.points.rotation.y;
       secondaryLines.rotation.y = secondary.points.rotation.y;
+      depthRails.rotation.y += (pointer.x * 0.07 - depthRails.rotation.y) * 0.018;
+      depthRails.rotation.x += (-pointer.y * 0.035 - depthRails.rotation.x) * 0.018;
 
-      camera.position.x += (pointer.x * 3 - camera.position.x) * 0.025;
-      camera.position.y += (-pointer.y * 2 - camera.position.y) * 0.025;
+      camera.position.x += (pointer.x * (isCompact ? 4.2 : 5.8) - camera.position.x) * 0.033;
+      camera.position.y += (-pointer.y * (isCompact ? 3 : 3.9) - camera.position.y) * 0.033;
       camera.lookAt(scene.position);
 
       renderer.render(scene, camera);
