@@ -7,7 +7,12 @@ initReveal();
 initCursor();
 initTiltCards();
 initContactForm();
+initSiteAtmosphere();
 initHeroScene();
+
+function initSiteAtmosphere() {
+  void import("./site-atmosphere").then(({ initSiteAtmosphere }) => initSiteAtmosphere());
+}
 
 function initHeroScene() {
   void import("./hero-scene").then(({ initHeroScene }) => initHeroScene());

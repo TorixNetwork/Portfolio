@@ -46,6 +46,7 @@ for (const viewport of viewports) {
     const overflowX = Math.max(body.scrollWidth, doc.scrollWidth) - doc.clientWidth;
     const hero = document.querySelector(".hero");
     const canvas = document.querySelector(".hero-canvas");
+    const atmosphere = document.querySelector(".site-atmosphere-canvas");
     const next = document.querySelector("#about");
     const heroBottom = hero?.getBoundingClientRect().bottom ?? 0;
     const nextTop = next?.getBoundingClientRect().top ?? 0;
@@ -63,7 +64,10 @@ for (const viewport of viewports) {
       canvasHeight: canvas instanceof HTMLCanvasElement ? canvas.height : 0,
       canvasCssWidth: canvasRect?.width ?? 0,
       canvasCssHeight: canvasRect?.height ?? 0,
-      canvasOpacity: canvas ? getComputedStyle(canvas).opacity : "0"
+      canvasOpacity: canvas ? getComputedStyle(canvas).opacity : "0",
+      atmosphereState: atmosphere instanceof HTMLCanvasElement ? atmosphere.dataset.atmosphere : "missing",
+      atmosphereWidth: atmosphere instanceof HTMLCanvasElement ? atmosphere.width : 0,
+      atmosphereHeight: atmosphere instanceof HTMLCanvasElement ? atmosphere.height : 0
     };
   });
 
@@ -76,6 +80,8 @@ for (const viewport of viewports) {
   if (audit.canvasOpacity !== "1") failures.push(`${viewport.name}: hero canvas is not visible`);
   if (audit.canvasWidth <= 300 || audit.canvasHeight <= 150) failures.push(`${viewport.name}: hero canvas retained default bitmap size`);
   if (audit.canvasCssWidth < viewport.width - 4 || audit.canvasCssHeight < viewport.height * 0.7) failures.push(`${viewport.name}: hero canvas is not sized to the hero`);
+  if (audit.atmosphereState !== "active") failures.push(`${viewport.name}: site atmosphere did not activate`);
+  if (audit.atmosphereWidth <= 300 || audit.atmosphereHeight <= 150) failures.push(`${viewport.name}: site atmosphere retained default bitmap size`);
   if (consoleErrors.length) failures.push(`${viewport.name}: console errors: ${consoleErrors.join(" | ")}`);
 
   if (viewport.name === "390") {
@@ -114,10 +120,12 @@ await reducedPage.goto(baseUrl, { waitUntil: "networkidle" });
 const reducedAudit = await reducedPage.evaluate(() => {
   const canvas = document.querySelector(".hero-canvas");
   const hero = document.querySelector(".hero");
+  const atmosphere = document.querySelector(".site-atmosphere-canvas");
   return {
     canvasDisplay: canvas ? getComputedStyle(canvas).display : "missing",
     heroIsWebglActive: hero?.classList.contains("is-webgl-active") ?? false,
     heroIsFallback: hero?.classList.contains("is-webgl-fallback") ?? false,
+    atmosphereState: atmosphere instanceof HTMLCanvasElement ? atmosphere.dataset.atmosphere : "missing",
     hiddenRevealCount: Array.from(document.querySelectorAll(".reveal")).filter((element) => {
       const style = getComputedStyle(element);
       return Number(style.opacity) < 1;
@@ -127,6 +135,7 @@ const reducedAudit = await reducedPage.evaluate(() => {
 if (reducedAudit.canvasDisplay !== "none") failures.push("reduced-motion: hero canvas should be disabled");
 if (reducedAudit.heroIsWebglActive) failures.push("reduced-motion: hero WebGL scene should not activate");
 if (!reducedAudit.heroIsFallback) failures.push("reduced-motion: hero should mark fallback mode");
+if (reducedAudit.atmosphereState !== "static") failures.push("reduced-motion: site atmosphere should render static fallback");
 if (reducedAudit.hiddenRevealCount > 0) failures.push("reduced-motion: reveal content should be visible");
 await reducedContext.close();
 

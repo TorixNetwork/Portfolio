@@ -3,6 +3,8 @@
   --bg: #03050b;
   --bg-soft: #060b12;
   --bg-band: #071018;
+  --bg-soft-surface: rgba(6, 11, 18, 0.78);
+  --bg-band-surface: rgba(7, 16, 24, 0.82);
   --panel: rgba(10, 18, 28, 0.78);
   --panel-strong: rgba(12, 22, 34, 0.94);
   --ink: #eef5ff;
@@ -49,6 +51,20 @@ body {
   font-size: 16px;
   line-height: 1.6;
   overflow-x: hidden;
+}
+
+.site-atmosphere-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  opacity: 0.82;
+  background:
+    radial-gradient(ellipse 68% 52% at 12% 12%, rgba(5, 217, 232, 0.08), transparent 62%),
+    radial-gradient(ellipse 58% 46% at 90% 76%, rgba(155, 92, 255, 0.08), transparent 60%),
+    var(--bg);
 }
 
 body::after {
@@ -101,6 +117,8 @@ strong {
 }
 
 .site-shell {
+  position: relative;
+  z-index: 1;
   isolation: isolate;
 }
 
@@ -116,11 +134,34 @@ strong {
 }
 
 .section-band:nth-of-type(odd) {
-  background: var(--bg-soft);
+  background:
+    linear-gradient(180deg, rgba(3, 5, 11, 0.28), rgba(3, 5, 11, 0.48)),
+    var(--bg-soft-surface);
 }
 
 .section-band:nth-of-type(even) {
-  background: var(--bg-band);
+  background:
+    linear-gradient(180deg, rgba(3, 5, 11, 0.34), rgba(3, 5, 11, 0.54)),
+    var(--bg-band-surface);
+}
+
+.section-band::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  content: "";
+  background:
+    radial-gradient(ellipse 48% 28% at 16% 10%, rgba(5, 217, 232, 0.045), transparent 72%),
+    radial-gradient(ellipse 38% 26% at 84% 66%, rgba(155, 92, 255, 0.04), transparent 70%);
+  opacity: 0.72;
+}
+
+.section-band.process,
+.section-band.contact {
+  background:
+    linear-gradient(180deg, rgba(3, 5, 11, 0.58), rgba(3, 5, 11, 0.75)),
+    rgba(5, 10, 16, 0.9);
 }
 
 .section-grid-bg {
@@ -464,6 +505,10 @@ strong {
   align-items: center;
   padding-block: 8rem 5.4rem;
   background: #03050b;
+}
+
+.hero::before {
+  display: none;
 }
 
 .hero::after {
@@ -1083,7 +1128,9 @@ strong {
 
 .site-footer {
   border-top: 1px solid rgba(132, 244, 255, 0.12);
-  background: #03050b;
+  background:
+    linear-gradient(180deg, rgba(3, 5, 11, 0.88), #03050b 62%),
+    var(--bg);
   padding-block: 4.4rem 2rem;
 }
 
@@ -1473,5 +1520,9 @@ strong {
 
   .hero-canvas {
     display: none;
+  }
+
+  .site-atmosphere-canvas {
+    opacity: 0.42;
   }
 }
