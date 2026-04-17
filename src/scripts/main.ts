@@ -25,12 +25,18 @@ function initHeader() {
 
   if (!header) return;
 
+  let scrollFrame = 0;
   const updateHeader = () => {
+    scrollFrame = 0;
     header.classList.toggle("is-scrolled", window.scrollY > 20);
+  };
+  const queueHeaderUpdate = () => {
+    if (scrollFrame) return;
+    scrollFrame = window.requestAnimationFrame(updateHeader);
   };
 
   updateHeader();
-  window.addEventListener("scroll", updateHeader, { passive: true });
+  window.addEventListener("scroll", queueHeaderUpdate, { passive: true });
 
   if (!sections.length || !navLinks.length) return;
 
@@ -142,11 +148,11 @@ function initReveal() {
         observer.unobserve(entry.target);
       });
     },
-    { rootMargin: "0px 0px -12% 0px", threshold: 0.12 }
+    { rootMargin: finePointer.matches ? "0px 0px -12% 0px" : "0px 0px -6% 0px", threshold: finePointer.matches ? 0.12 : 0.08 }
   );
 
   elements.forEach((element, index) => {
-    element.style.transitionDelay = `${Math.min(index % 6, 5) * 45}ms`;
+    element.style.transitionDelay = finePointer.matches ? `${Math.min(index % 6, 5) * 45}ms` : "0ms";
     observer.observe(element);
   });
 }
@@ -156,6 +162,10 @@ function initCursor() {
   const ring = document.querySelector<HTMLElement>(".cursor-ring");
 
   if (!dot || !ring) return;
+
+  document.documentElement.classList.toggle("has-custom-cursor", finePointer.matches);
+
+  if (!finePointer.matches) return;
 
   let mouseX = window.innerWidth / 2;
   let mouseY = window.innerHeight / 2;

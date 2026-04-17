@@ -538,7 +538,7 @@ strong {
   z-index: 1;
   opacity: 0;
   mix-blend-mode: screen;
-  transition: opacity 700ms ease;
+  transition: opacity 420ms ease;
 }
 
 .hero-fallback {
@@ -1419,6 +1419,30 @@ strong {
 
   .footer-bottom {
     flex-direction: column;
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .button:hover,
+  .button--secondary:hover,
+  .button--ghost:hover,
+  .service-card:hover,
+  .advantage-card:hover,
+  .ecosystem-card:hover,
+  .contact-links a:hover {
+    transform: none;
+  }
+
+  .button:hover::before,
+  .service-card:hover::before,
+  .advantage-card:hover::before,
+  .ecosystem-card:hover::before {
+    opacity: 0;
+  }
+
+  .js .reveal {
+    transform: translateY(14px);
+    transition-duration: 420ms;
   }
 }
 

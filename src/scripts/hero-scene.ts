@@ -31,47 +31,57 @@ export async function initHeroScene() {
 
   try {
     const isCompact = window.matchMedia("(max-width: 760px)").matches;
+    const isTablet = window.matchMedia("(max-width: 1080px)").matches;
+    const isTouch = window.matchMedia("(pointer: coarse)").matches;
+    const deviceSignals = navigator as Navigator & { deviceMemory?: number };
+    const lowPower = (deviceSignals.deviceMemory ?? 4) <= 2 || (navigator.hardwareConcurrency || 4) <= 4;
+    const mobileProfile = isCompact || (isTablet && isTouch);
     const renderer = new WebGLRenderer({
       canvas,
       alpha: true,
-      antialias: !isCompact,
+      antialias: !mobileProfile,
       powerPreference: "high-performance"
     });
     const scene = new Scene();
-    const camera = new PerspectiveCamera(isCompact ? 64 : 68, 1, 0.1, 1000);
+    const camera = new PerspectiveCamera(mobileProfile ? 64 : 68, 1, 0.1, 1000);
     const bounds = {
-      x: isCompact ? 48 : 58,
-      y: isCompact ? 36 : 42,
-      z: isCompact ? 38 : 58
+      x: mobileProfile ? 48 : 58,
+      y: mobileProfile ? 36 : 42,
+      z: mobileProfile ? 38 : 58
     };
-    const primaryCount = isCompact ? 158 : 260;
-    const secondaryCount = isCompact ? 68 : 112;
-    const deepCount = isCompact ? 42 : 88;
-    const primary = createParticleLayer(primaryCount, bounds, isCompact ? 0.2 : 0.23, 0x00d8ff, 0.9, 1);
-    const secondary = createParticleLayer(secondaryCount, { x: isCompact ? 42 : 50, y: isCompact ? 32 : 38, z: isCompact ? 34 : 48 }, isCompact ? 0.16 : 0.18, 0xa855f7, 0.7, 0.82);
-    const deep = createParticleLayer(deepCount, { x: isCompact ? 56 : 72, y: isCompact ? 42 : 48, z: isCompact ? 50 : 72 }, isCompact ? 0.12 : 0.14, 0x86ffd7, 0.46, 0.54);
-    const primaryLineMaterial = new LineBasicMaterial({ color: 0x00d8ff, transparent: true, opacity: isCompact ? 0.16 : 0.2, blending: AdditiveBlending, depthWrite: false });
-    const secondaryLineMaterial = new LineBasicMaterial({ color: 0x7c3aed, transparent: true, opacity: isCompact ? 0.11 : 0.14, blending: AdditiveBlending, depthWrite: false });
-    const railMaterial = new LineBasicMaterial({ color: 0x86ffd7, transparent: true, opacity: isCompact ? 0.09 : 0.13, blending: AdditiveBlending, depthWrite: false });
+    const primaryCount = mobileProfile ? (lowPower ? 88 : 116) : 260;
+    const secondaryCount = mobileProfile ? (lowPower ? 34 : 48) : 112;
+    const deepCount = mobileProfile ? (lowPower ? 20 : 30) : 88;
+    const primary = createParticleLayer(primaryCount, bounds, mobileProfile ? 0.2 : 0.23, 0x00d8ff, mobileProfile ? 0.82 : 0.9, 1);
+    const secondary = createParticleLayer(secondaryCount, { x: mobileProfile ? 42 : 50, y: mobileProfile ? 32 : 38, z: mobileProfile ? 34 : 48 }, mobileProfile ? 0.16 : 0.18, 0xa855f7, mobileProfile ? 0.62 : 0.7, 0.82);
+    const deep = createParticleLayer(deepCount, { x: mobileProfile ? 56 : 72, y: mobileProfile ? 42 : 48, z: mobileProfile ? 50 : 72 }, mobileProfile ? 0.12 : 0.14, 0x86ffd7, mobileProfile ? 0.42 : 0.46, 0.54);
+    const primaryLineMaterial = new LineBasicMaterial({ color: 0x00d8ff, transparent: true, opacity: mobileProfile ? 0.14 : 0.2, blending: AdditiveBlending, depthWrite: false });
+    const secondaryLineMaterial = new LineBasicMaterial({ color: 0x7c3aed, transparent: true, opacity: mobileProfile ? 0.09 : 0.14, blending: AdditiveBlending, depthWrite: false });
+    const railMaterial = new LineBasicMaterial({ color: 0x86ffd7, transparent: true, opacity: mobileProfile ? 0.08 : 0.13, blending: AdditiveBlending, depthWrite: false });
     const depthRails = createDepthRails(railMaterial);
     const shapes = [
-      { mesh: addShape(new IcosahedronGeometry(isCompact ? 4.2 : 5.2, 0), 0x00c8ff, isCompact ? -19 : -29, isCompact ? 12 : 12, -14, 0.32), rx: 0.004, ry: 0.007 },
-      { mesh: addShape(new OctahedronGeometry(isCompact ? 3.3 : 4.1, 0), 0x7c3aed, isCompact ? 19 : 28, isCompact ? -11 : -10, -4, 0.3), rx: 0.006, ry: 0.005 },
-      { mesh: addShape(new TorusGeometry(isCompact ? 3.3 : 4.2, 0.82, 8, 18), 0x06ffd4, isCompact ? 14 : 21, isCompact ? 14 : 15, -22, 0.3), rx: 0.005, ry: 0.009 },
-      { mesh: addShape(new TetrahedronGeometry(isCompact ? 2.9 : 3.7, 0), 0xa855f7, isCompact ? -17 : -23, isCompact ? -14 : -13, -6, 0.28), rx: 0.007, ry: 0.004 },
-      { mesh: addShape(new TorusGeometry(isCompact ? 9.2 : 12.5, 0.18, 8, 64), 0x00c8ff, 0, 0, -38, isCompact ? 0.11 : 0.14), rx: 0.0015, ry: 0.0022 },
-      { mesh: addShape(new TorusGeometry(isCompact ? 12.5 : 17, 0.16, 8, 72), 0x7c3aed, 0, 0, -54, isCompact ? 0.08 : 0.11), rx: -0.001, ry: 0.0018 }
+      { mesh: addShape(new IcosahedronGeometry(mobileProfile ? 4.2 : 5.2, 0), 0x00c8ff, mobileProfile ? -19 : -29, mobileProfile ? 12 : 12, -14, mobileProfile ? 0.28 : 0.32), rx: 0.004, ry: 0.007 },
+      { mesh: addShape(new OctahedronGeometry(mobileProfile ? 3.3 : 4.1, 0), 0x7c3aed, mobileProfile ? 19 : 28, mobileProfile ? -11 : -10, -4, mobileProfile ? 0.26 : 0.3), rx: 0.006, ry: 0.005 },
+      { mesh: addShape(new TorusGeometry(mobileProfile ? 3.3 : 4.2, 0.82, 8, mobileProfile ? 14 : 18), 0x06ffd4, mobileProfile ? 14 : 21, mobileProfile ? 14 : 15, -22, mobileProfile ? 0.25 : 0.3), rx: 0.005, ry: 0.009 },
+      { mesh: addShape(new TetrahedronGeometry(mobileProfile ? 2.9 : 3.7, 0), 0xa855f7, mobileProfile ? -17 : -23, mobileProfile ? -14 : -13, -6, mobileProfile ? 0.24 : 0.28), rx: 0.007, ry: 0.004 },
+      { mesh: addShape(new TorusGeometry(mobileProfile ? 9.2 : 12.5, 0.18, 8, mobileProfile ? 48 : 64), 0x00c8ff, 0, 0, -38, mobileProfile ? 0.1 : 0.14), rx: 0.0015, ry: 0.0022 },
+      { mesh: addShape(new TorusGeometry(mobileProfile ? 12.5 : 17, 0.16, 8, mobileProfile ? 52 : 72), 0x7c3aed, 0, 0, -54, mobileProfile ? 0.075 : 0.11), rx: -0.001, ry: 0.0018 }
     ];
-    let primaryLines = buildLines(primary.positions, primaryCount, primaryLineMaterial, isCompact ? 14 : 16, null, isCompact ? 260 : 760);
-    let secondaryLines = buildLines(secondary.positions, secondaryCount, secondaryLineMaterial, isCompact ? 18 : 21, null, isCompact ? 130 : 340);
+    const primaryLineLimit = mobileProfile ? (lowPower ? 108 : 150) : 760;
+    const secondaryLineLimit = mobileProfile ? (lowPower ? 48 : 74) : 340;
+    const lineRebuildEvery = mobileProfile ? (lowPower ? 13 : 10) : 5;
+    const targetFrameMs = mobileProfile ? (lowPower ? 33 : 24) : 0;
+    let primaryLines = buildLines(primary.positions, primaryCount, primaryLineMaterial, mobileProfile ? 13 : 16, null, primaryLineLimit);
+    let secondaryLines = buildLines(secondary.positions, secondaryCount, secondaryLineMaterial, mobileProfile ? 17 : 21, null, secondaryLineLimit);
     const pointer = { x: 0, y: 0 };
     let visible = true;
     let running = false;
     let animationFrame = 0;
+    let resizeFrame = 0;
     let lastTime = performance.now();
     let frame = 0;
 
-    camera.position.z = isCompact ? 37 : 34;
+    camera.position.z = mobileProfile ? 37 : 34;
     renderer.setClearColor(0x000000, 0);
 
     scene.add(primary.points, secondary.points, deep.points, primaryLines, secondaryLines, depthRails);
@@ -80,15 +90,22 @@ export async function initHeroScene() {
       const rect = canvas.getBoundingClientRect();
       const width = Math.max(1, Math.floor(rect.width));
       const height = Math.max(1, Math.floor(rect.height));
-      const pixelRatio = Math.min(window.devicePixelRatio || 1, isCompact ? 1.45 : 1.85);
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, mobileProfile ? (lowPower ? 1 : 1.18) : 1.85);
 
       renderer.setPixelRatio(pixelRatio);
       renderer.setSize(width, height, false);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
     };
+    const queueResize = () => {
+      if (resizeFrame) return;
+      resizeFrame = window.requestAnimationFrame(() => {
+        resizeFrame = 0;
+        resize();
+      });
+    };
 
-    const resizeObserver = new ResizeObserver(resize);
+    const resizeObserver = new ResizeObserver(queueResize);
     resizeObserver.observe(canvas);
     resize();
 
@@ -103,6 +120,7 @@ export async function initHeroScene() {
     intersection.observe(canvas);
 
     const onPointerMove = (event: PointerEvent) => {
+      if (event.pointerType !== "mouse") return;
       pointer.x = (event.clientX / window.innerWidth - 0.5) * 2;
       pointer.y = (event.clientY / window.innerHeight - 0.5) * 2;
     };
@@ -114,6 +132,7 @@ export async function initHeroScene() {
 
     const cleanup = () => {
       stop();
+      window.cancelAnimationFrame(resizeFrame);
       resizeObserver.disconnect();
       intersection.disconnect();
       window.removeEventListener("pointermove", onPointerMove);
@@ -190,9 +209,9 @@ export async function initHeroScene() {
 
     function createDepthRails(material: InstanceType<typeof LineBasicMaterial>) {
       const points: number[] = [];
-      const nearZ = isCompact ? 18 : 22;
-      const farZ = isCompact ? -58 : -74;
-      const lanes = isCompact
+      const nearZ = mobileProfile ? 18 : 22;
+      const farZ = mobileProfile ? -58 : -74;
+      const lanes = mobileProfile
         ? [
             [-0.9, -0.72],
             [-0.45, -0.78],
@@ -219,16 +238,16 @@ export async function initHeroScene() {
           ];
 
       lanes.forEach(([x, y]) => {
-        points.push(x * 16, y * 11, farZ, x * (isCompact ? 38 : 52), y * (isCompact ? 27 : 34), nearZ);
+        points.push(x * 16, y * 11, farZ, x * (mobileProfile ? 38 : 52), y * (mobileProfile ? 27 : 34), nearZ);
       });
 
-      const planes = isCompact ? 4 : 5;
+      const planes = mobileProfile ? 4 : 5;
 
       for (let index = 0; index < planes; index += 1) {
         const progress = index / Math.max(1, planes - 1);
         const z = farZ + (nearZ - farZ) * progress;
-        const width = (isCompact ? 15 : 20) + progress * (isCompact ? 25 : 36);
-        const height = (isCompact ? 10 : 13) + progress * (isCompact ? 18 : 25);
+        const width = (mobileProfile ? 15 : 20) + progress * (mobileProfile ? 25 : 36);
+        const height = (mobileProfile ? 10 : 13) + progress * (mobileProfile ? 18 : 25);
         points.push(-width, -height, z, width, -height, z);
         points.push(width, -height, z, width, height, z);
         points.push(width, height, z, -width, height, z);
@@ -319,6 +338,11 @@ export async function initHeroScene() {
     function tick(now: number) {
       if (!running) return;
 
+      if (targetFrameMs && now - lastTime < targetFrameMs) {
+        animationFrame = window.requestAnimationFrame(tick);
+        return;
+      }
+
       const delta = Math.min((now - lastTime) / 16.67, 2.4);
       lastTime = now;
       frame += 1;
@@ -327,9 +351,9 @@ export async function initHeroScene() {
       updateLayer(secondary, secondaryCount, delta);
       updateLayer(deep, deepCount, delta);
 
-      if (frame % (isCompact ? 7 : 5) === 0) {
-        primaryLines = buildLines(primary.positions, primaryCount, primaryLineMaterial, isCompact ? 14 : 16, primaryLines, isCompact ? 260 : 760);
-        secondaryLines = buildLines(secondary.positions, secondaryCount, secondaryLineMaterial, isCompact ? 18 : 21, secondaryLines, isCompact ? 130 : 340);
+      if (frame % lineRebuildEvery === 0) {
+        primaryLines = buildLines(primary.positions, primaryCount, primaryLineMaterial, mobileProfile ? 13 : 16, primaryLines, primaryLineLimit);
+        secondaryLines = buildLines(secondary.positions, secondaryCount, secondaryLineMaterial, mobileProfile ? 17 : 21, secondaryLines, secondaryLineLimit);
       }
 
       shapes.forEach((shape) => {
@@ -346,8 +370,8 @@ export async function initHeroScene() {
       depthRails.rotation.y += (pointer.x * 0.07 - depthRails.rotation.y) * 0.018;
       depthRails.rotation.x += (-pointer.y * 0.035 - depthRails.rotation.x) * 0.018;
 
-      camera.position.x += (pointer.x * (isCompact ? 4.2 : 5.8) - camera.position.x) * 0.033;
-      camera.position.y += (-pointer.y * (isCompact ? 3 : 3.9) - camera.position.y) * 0.033;
+      camera.position.x += (pointer.x * (mobileProfile ? 3.4 : 5.8) - camera.position.x) * (mobileProfile ? 0.026 : 0.033);
+      camera.position.y += (-pointer.y * (mobileProfile ? 2.4 : 3.9) - camera.position.y) * (mobileProfile ? 0.026 : 0.033);
       camera.lookAt(scene.position);
 
       renderer.render(scene, camera);

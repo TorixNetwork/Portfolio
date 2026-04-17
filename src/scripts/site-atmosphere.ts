@@ -59,14 +59,16 @@ export function initSiteAtmosphere() {
     time: 0,
     running: false,
     rafId: 0,
+    resizeFrame: 0,
+    scrollingUntil: 0,
     particles: [] as Particle[],
     sections: [] as SectionBand[]
   };
 
   const mobile = window.matchMedia("(max-width: 760px)").matches;
   const tablet = window.matchMedia("(max-width: 1080px)").matches;
-  const particleCount = mobile ? (lowPower ? 46 : 56) : tablet ? (lowPower ? 66 : 78) : lowPower ? 92 : 118;
-  const connectionLimit = mobile ? (lowPower ? 42 : 56) : tablet ? (lowPower ? 68 : 86) : lowPower ? 96 : 128;
+  const particleCount = mobile ? (lowPower ? 30 : 40) : tablet ? (lowPower ? 52 : 66) : lowPower ? 92 : 118;
+  const connectionLimit = mobile ? (lowPower ? 20 : 32) : tablet ? (lowPower ? 48 : 66) : lowPower ? 96 : 128;
 
   const buildParticles = () => {
     state.particles = Array.from({ length: particleCount }, (_, index) => createParticle(index));
@@ -78,11 +80,20 @@ export function initSiteAtmosphere() {
     state.height = Math.max(1, Math.floor(rect.height));
     state.centerX = state.width / 2;
     state.centerY = state.height / 2;
-    state.pixelRatio = Math.min(window.devicePixelRatio || 1, mobile ? 1.25 : 1.6);
+    state.pixelRatio = Math.min(window.devicePixelRatio || 1, mobile ? (lowPower ? 1 : 1.08) : tablet ? 1.25 : 1.6);
     canvas.width = Math.floor(state.width * state.pixelRatio);
     canvas.height = Math.floor(state.height * state.pixelRatio);
     context.setTransform(state.pixelRatio, 0, 0, state.pixelRatio, 0, 0);
     measureSections();
+  };
+
+  const queueResize = () => {
+    if (state.resizeFrame) return;
+    state.resizeFrame = requestAnimationFrame(() => {
+      state.resizeFrame = 0;
+      resize();
+      updateScrollTargets();
+    });
   };
 
   const measureSections = () => {
@@ -108,6 +119,7 @@ export function initSiteAtmosphere() {
 
   const updateScrollTargets = () => {
     state.scrollTarget = window.scrollY;
+    state.scrollingUntil = performance.now() + (mobile ? 320 : tablet ? 240 : 160);
     const mid = state.scrollTarget + window.innerHeight * 0.5;
     const activeSection = state.sections.find((section) => mid >= section.top && mid < section.bottom);
     state.intensityTarget = activeSection?.intensity ?? 0.32;
@@ -131,7 +143,8 @@ export function initSiteAtmosphere() {
 
   const cleanup = () => {
     stop();
-    window.removeEventListener("resize", resize);
+    cancelAnimationFrame(state.resizeFrame);
+    window.removeEventListener("resize", queueResize);
     window.removeEventListener("scroll", updateScrollTargets);
     window.removeEventListener("pointermove", onPointerMove);
     window.removeEventListener("pointerleave", onPointerLeave);
@@ -152,12 +165,24 @@ export function initSiteAtmosphere() {
   const tick = (now: number) => {
     if (!state.running) return;
 
+    const isScrolling = now < state.scrollingUntil;
+    const targetFrameMs =
+      mobile ? (isScrolling ? (lowPower ? 48 : 34) : lowPower ? 38 : 28) :
+      tablet ? (isScrolling ? (lowPower ? 38 : 30) : lowPower ? 32 : 24) :
+      lowPower ? 24 :
+      0;
+
+    if (targetFrameMs && state.time && now - state.time < targetFrameMs) {
+      state.rafId = requestAnimationFrame(tick);
+      return;
+    }
+
     const delta = state.time ? Math.min((now - state.time) / 16.67, 2.2) : 1;
     state.time = now;
     state.scrollY += (state.scrollTarget - state.scrollY) * 0.055;
     state.intensity += (state.intensityTarget - state.intensity) * 0.04;
 
-    render(delta);
+    render(delta, isScrolling);
     state.rafId = requestAnimationFrame(tick);
   };
 
@@ -174,14 +199,15 @@ export function initSiteAtmosphere() {
     cancelAnimationFrame(state.rafId);
   }
 
-  function render(delta: number) {
+  function render(delta: number, isScrolling: boolean) {
     const intensity = state.intensity;
+    const detail = mobile && isScrolling ? 0.62 : tablet && isScrolling ? 0.78 : 1;
 
     context.clearRect(0, 0, state.width, state.height);
     drawAmbientGlows(intensity);
-    drawDepthPlanes(intensity);
-    drawGrid(intensity);
-    drawWireVolumes(intensity);
+    drawDepthPlanes(intensity * detail);
+    drawGrid(intensity * (mobile && isScrolling ? 0.82 : 1));
+    drawWireVolumes(intensity, detail);
 
     const projected = state.particles.map((particle) => {
       particle.x += particle.vx * delta;
@@ -216,11 +242,12 @@ export function initSiteAtmosphere() {
     });
 
     let connections = 0;
-    const maxDistance = mobile ? 104 : 150;
+    const maxConnections = Math.max(8, Math.floor(connectionLimit * detail));
+    const maxDistance = mobile ? 94 : tablet ? 128 : 150;
     const maxDistanceSquared = maxDistance * maxDistance;
 
-    for (let i = 0; i < projected.length && connections < connectionLimit; i += 1) {
-      for (let j = i + 1; j < projected.length && connections < connectionLimit; j += 1) {
+    for (let i = 0; i < projected.length && connections < maxConnections; i += 1) {
+      for (let j = i + 1; j < projected.length && connections < maxConnections; j += 1) {
         const a = projected[i];
         const b = projected[j];
         const dx = a.x - b.x;
@@ -231,7 +258,7 @@ export function initSiteAtmosphere() {
         if (distanceSquared < maxDistanceSquared && depthGap < 0.5) {
           const closeness = 1 - distanceSquared / maxDistanceSquared;
           const avgDepth = (a.particle.z + b.particle.z) * 0.5;
-          const alpha = Math.min(0.42, closeness * (0.26 + avgDepth * 0.16) * intensity * (1 - depthGap * 0.72));
+          const alpha = Math.min(0.42, closeness * (0.26 + avgDepth * 0.16) * intensity * detail * (1 - depthGap * 0.72));
           const color = a.particle.hue === "violet" || b.particle.hue === "violet" ? COLORS.violet : COLORS.cyan;
 
           context.lineWidth = (mobile ? 0.55 : 0.68) + avgDepth * (mobile ? 0.55 : 0.82);
@@ -254,7 +281,7 @@ export function initSiteAtmosphere() {
       context.arc(item.x, item.y, item.radius, 0, Math.PI * 2);
       context.fill();
 
-      if (item.particle.z > 0.74 && intensity > 0.5) {
+      if (detail > 0.9 && item.particle.z > 0.74 && intensity > 0.5) {
         context.lineWidth = mobile ? 0.45 : 0.6;
         context.strokeStyle = `rgba(${color}, ${item.alpha * 0.34})`;
         context.beginPath();
@@ -324,7 +351,7 @@ export function initSiteAtmosphere() {
     context.restore();
   }
 
-  function drawWireVolumes(intensity: number) {
+  function drawWireVolumes(intensity: number, detail = 1) {
     const cubeVertices = [
       [-1, -1, -1],
       [1, -1, -1],
@@ -353,7 +380,7 @@ export function initSiteAtmosphere() {
     ];
     const time = state.time * 0.00024;
     const volumes = mobile
-      ? [{ x: 0.84, y: 0.28, size: 54, color: COLORS.cyan, phase: 0.4 }]
+      ? [{ x: 0.84, y: 0.28, size: lowPower ? 46 : 52, color: COLORS.cyan, phase: 0.4 }]
       : [
           { x: 0.15, y: 0.34, size: 104, color: COLORS.cyan, phase: 0 },
           { x: 0.84, y: 0.38, size: 116, color: COLORS.violet, phase: 1.4 }
@@ -373,9 +400,9 @@ export function initSiteAtmosphere() {
         const start = projected[a];
         const end = projected[b];
         const depth = (start.depth + end.depth) * 0.5;
-        const alpha = Math.min(0.56, (0.16 + depth * 0.24) * intensity);
+        const alpha = Math.min(0.56, (0.16 + depth * 0.24) * intensity * detail);
 
-        context.lineWidth = (mobile ? 0.75 : 1.05) + depth * 1.18;
+        context.lineWidth = ((mobile ? 0.75 : 1.05) + depth * 1.18) * Math.max(0.82, detail);
         context.strokeStyle = `rgba(${volume.color}, ${alpha})`;
         context.beginPath();
         context.moveTo(start.x, start.y);
@@ -384,7 +411,7 @@ export function initSiteAtmosphere() {
       });
 
       projected.forEach((point) => {
-        const alpha = Math.min(0.5, (0.15 + point.depth * 0.2) * intensity);
+        const alpha = Math.min(0.5, (0.15 + point.depth * 0.2) * intensity * detail);
 
         context.fillStyle = `rgba(${volume.color}, ${alpha})`;
         context.beginPath();
@@ -460,7 +487,7 @@ export function initSiteAtmosphere() {
   buildParticles();
   resize();
   updateScrollTargets();
-  window.addEventListener("resize", resize, { passive: true });
+  window.addEventListener("resize", queueResize, { passive: true });
   window.addEventListener("scroll", updateScrollTargets, { passive: true });
   window.addEventListener("pointermove", onPointerMove, { passive: true });
   window.addEventListener("pointerleave", onPointerLeave, { passive: true });
