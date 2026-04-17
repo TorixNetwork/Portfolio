@@ -1,8 +1,8 @@
 export const stats = [
-  { value: "11", label: "Core capabilities" },
-  { value: "Static", label: "Fast deployment" },
-  { value: "Cloud", label: "Infrastructure ready" },
-  { value: "Launch", label: "Growth support" }
+  { value: "Bots", label: "Telegram automation" },
+  { value: "Web", label: "Sites and apps" },
+  { value: "Cloud", label: "VPS operations" },
+  { value: "Launch", label: "Campaign systems" }
 ];
 
 export const services = [
@@ -10,77 +10,77 @@ export const services = [
     code: "BOT",
     title: "Telegram Bot Development",
     description:
-      "Custom bots for automation workflows, user management, community utilities, payments, moderation, and intelligent command interfaces.",
-    tag: "Automation"
+      "Bots for workflows that need to hold up in public: onboarding, moderation, payments, access control, alerts, and admin tools.",
+    tag: "Bot ops"
   },
   {
     code: "WEB",
     title: "Website Development",
     description:
-      "Fast, polished websites with structured content, responsive design, accessibility, analytics readiness, and conversion-focused user journeys.",
-    tag: "Web"
+      "Fast marketing and portfolio sites with clear content structure, responsive craft, accessibility, and deployment discipline.",
+    tag: "Sites"
   },
   {
     code: "APP",
     title: "Web App Development",
     description:
-      "Modern web applications for MVPs, internal tools, dashboards, client portals, and scalable SaaS-style product experiences.",
+      "Lean web products for MVPs, internal tools, dashboards, client portals, and operations teams that need a real interface.",
     tag: "Product"
   },
   {
     code: "API",
     title: "API Integration and Automation",
     description:
-      "Third-party integrations, custom API pipelines, webhook systems, background jobs, and workflow automation that removes manual work.",
-    tag: "Integration"
+      "API pipelines, webhook flows, background jobs, and practical automation that connects the tools already running the business.",
+    tag: "Pipelines"
   },
   {
     code: "VPS",
     title: "VPS and Cloud Management",
     description:
-      "Server setup, deployment workflows, monitoring, security hardening, backups, and practical cloud operations for reliable launches.",
-    tag: "Infrastructure"
+      "Server setup, deploy paths, monitoring, hardening, backups, and cloud operations for projects that cannot feel fragile.",
+    tag: "Cloud"
   },
   {
     code: "LAB",
     title: "Tech Startup Collaborations",
     description:
-      "Strategic technical partnership for early-stage teams that need practical execution, rapid iteration, and launch-ready systems.",
-    tag: "Collaboration"
+      "Technical partnership for early teams that need someone to scope clearly, ship quickly, and keep the system understandable.",
+    tag: "Lab"
   },
   {
     code: "GO",
     title: "Launch Support",
     description:
-      "Structured launch planning, audience touchpoints, campaign infrastructure, and operational support for digital products and communities.",
+      "Launch planning, campaign infrastructure, audience touchpoints, and the operational details around a public release.",
     tag: "Launch"
   },
   {
     code: "COM",
     title: "Community Growth Strategy",
     description:
-      "Professional community development for Telegram and social channels, focused on engagement quality, onboarding, and retention systems.",
+      "Community systems for Telegram and social channels, focused on useful onboarding, healthy engagement, and retention loops.",
     tag: "Community"
   },
   {
     code: "ADS",
     title: "Digital Reach Campaigns",
     description:
-      "Credible promotional campaigns and project visibility planning that connect your work with relevant audiences and partners.",
+      "Visibility planning and promotional campaigns for projects that need relevant attention, not noisy traffic.",
     tag: "Visibility"
   },
   {
     code: "SOC",
     title: "Audience Development",
     description:
-      "Content structure, distribution planning, growth infrastructure, and measurable operating rhythms across digital platforms.",
-    tag: "Growth"
+      "Content structure, distribution rhythm, and growth operations that give a project a repeatable way to reach people.",
+    tag: "Audience"
   },
   {
     code: "CUS",
     title: "Custom Digital Solutions",
     description:
-      "Bespoke tools and systems designed around specific business requirements, operational constraints, and long-term maintainability.",
+      "Purpose-built tools for unusual requirements, edge-case workflows, and teams that need something more precise than a template.",
     tag: "Custom"
   }
 ];
@@ -89,65 +89,65 @@ export const advantages = [
   {
     title: "Custom-Built Systems",
     description:
-      "Every engagement starts with the use case, not a template. The result is practical, maintainable, and shaped around the real workflow."
+      "Work starts from the use case, not from a premade package. The system is shaped around the workflow it has to support."
   },
   {
     title: "Fast, Focused Delivery",
     description:
-      "Clear scope, direct communication, and short feedback loops keep projects moving without sacrificing quality."
+      "Small decisions stay visible, feedback loops stay short, and momentum does not rely on vague status updates."
   },
   {
     title: "Scalable Foundations",
     description:
-      "Architecture choices account for future traffic, integrations, operational ownership, and the next product milestone."
+      "Architecture choices account for the next integration, traffic spike, handoff, and product milestone."
   },
   {
     title: "Automation-First Thinking",
     description:
-      "Manual repetition is treated as a product problem. We design systems that reduce overhead from the beginning."
+      "Manual repetition is treated as a design problem. The goal is less admin work, fewer gaps, and clearer ownership."
   },
   {
     title: "Launch-Aware Execution",
     description:
-      "The work is planned around deployment, reliability, handoff, and the audience moments that matter after release."
+      "The work is planned around deployment, reliability, handoff, and the audience moments immediately after release."
   },
   {
     title: "Modern Technical Stack",
     description:
-      "We use current, proven tooling that keeps the product fast, secure, maintainable, and easy to extend."
+      "Tooling stays current, proven, and maintainable so the project remains easy to extend after launch."
   },
   {
     title: "Supportive Partnership",
     description:
-      "You get practical technical guidance before, during, and after launch, with communication that stays direct and useful."
+      "Technical guidance stays direct and useful, from early scope through post-launch improvements."
   },
   {
     title: "Growth Infrastructure",
     description:
-      "Community, visibility, and product workflows are connected into systems that can be measured and improved."
+      "Community, visibility, and product workflows are connected into systems that can be measured instead of guessed."
   }
 ];
 
 export const ecosystemNodes = [
   {
     title: "Startup Partnerships",
-    description: "Technical execution for early-stage ventures"
+    description: "Hands-on delivery for early-stage ventures"
   },
   {
     title: "Project Collaborations",
-    description: "Shared delivery across ambitious digital builds"
+    description: "Shared execution across focused digital builds"
   },
   {
     title: "Digital Launches",
-    description: "Structured go-to-market support"
+    description: "Release planning with operational follow-through"
   },
   {
     title: "Builder Network",
-    description: "Connections across creators, founders, and operators"
+    description: "Useful connections across creators and operators"
   },
   {
     title: "Growth Operations",
-    description: "Campaign systems, reach planning, and community support"
+    description: "Reach planning, campaign systems, and community support"
   }
 ];
 
@@ -155,27 +155,27 @@ export const processSteps = [
   {
     title: "Discuss",
     description:
-      "We clarify goals, constraints, target users, timeline, and what a successful result needs to do."
+      "Define the outcome, constraints, users, timeline, and the parts that cannot be allowed to fail."
   },
   {
     title: "Plan",
     description:
-      "Scope, architecture, content, integrations, and milestones are turned into a clear execution path."
+      "Turn scope, architecture, content, integrations, and milestones into a delivery path."
   },
   {
     title: "Build",
     description:
-      "Design and engineering move together, with regular checkpoints and clean implementation practices."
+      "Design and engineering move together with regular checkpoints and clean implementation."
   },
   {
     title: "Launch",
     description:
-      "The project is tested, optimized, deployed, and prepared for the first real users."
+      "Test, optimize, deploy, and prepare the project for the first real users."
   },
   {
     title: "Scale",
     description:
-      "We iterate on performance, reach, automation, and operational improvements after release."
+      "Improve performance, reach, automation, and operations once the project is in the wild."
   }
 ];
 

@@ -14,16 +14,16 @@ const formMethod = hasEndpoint ? "post" : "post";
   <div class="container">
     <SectionHeader
       id="contact-title"
-      eyebrow="Get in Touch"
+      eyebrow="Project Intake"
       title="Start a"
       highlight="conversation."
-      description="Bring a defined brief, an early idea, or a launch problem that needs a practical technical partner."
+      description="Send the useful context: what you are building, what is blocked, and what needs to be true after launch."
     />
 
     <div class="contact-layout">
       <div class="contact-copy reveal">
         <p>
-          Telegram is the fastest way to reach Torix Network. Email works well for detailed project context, technical notes, and formal collaboration requests.
+          Telegram is best for quick scoping. Email works better for detailed briefs, technical notes, and formal collaboration requests.
         </p>
         <div class="contact-links" aria-label="Contact options">
           <a href={`mailto:${siteConfig.email}`}>
@@ -36,9 +36,9 @@ const formMethod = hasEndpoint ? "post" : "post";
           </a>
         </div>
         <div class="contact-note">
-          <span>Form behavior</span>
+          <span>Routing</span>
           <p>
-            This static site uses a mailto fallback by default. Add a form endpoint in configuration when you connect a hosted form backend.
+            The form drafts an email by default. Connect a hosted form endpoint in configuration when you want direct submissions.
           </p>
         </div>
         <CtaLink href={siteConfig.telegramUrl} label="Message on Telegram" variant="secondary" external />
@@ -55,7 +55,7 @@ const formMethod = hasEndpoint ? "post" : "post";
       >
         <div class="form-heading">
           <h3>Project details</h3>
-          <p>Share enough context for a useful first reply.</p>
+          <p>Short is fine. Specific is better.</p>
         </div>
 
         <div class="form-grid">
